@@ -1,0 +1,32 @@
+"""Bazel module for ordeal SMT verification rules.
+
+Provides Bazel rules for gating builds on ordeal, the certificate-checked
+QF_BV SMT solver. Downloads pre-built ordeal release binaries from GitHub.
+"""
+
+module(
+    name = "rules_ordeal",
+    version = "0.1.0",
+    compatibility_level = 1,
+)
+
+# Core dependencies
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+
+# ordeal toolchain extension
+ordeal = use_extension("//ordeal:extensions.bzl", "ordeal")
+ordeal.toolchain(version = "0.16.1")
+use_repo(
+    ordeal,
+    "ordeal_toolchains",
+    "ordeal_toolchains_aarch64_apple_darwin",
+    "ordeal_toolchains_aarch64_unknown_linux_gnu",
+    "ordeal_toolchains_x86_64_apple_darwin",
+    "ordeal_toolchains_x86_64_unknown_linux_gnu",
+)
+
+# Register all platform toolchains — the hub repo declares one toolchain()
+# per platform, and Bazel's toolchain resolution picks the right one based
+# on exec_compatible_with constraints.
+register_toolchains("@ordeal_toolchains//:all")

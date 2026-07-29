@@ -1,0 +1,26 @@
+"""Example consumer of rules_ordeal.
+
+Uses the rules from the parent directory via local_path_override — this is
+also the integration test bed CI runs (`cd examples && bazel test //...`).
+"""
+
+module(
+    name = "rules_ordeal_examples",
+    version = "0.0.0",
+)
+
+bazel_dep(name = "rules_ordeal", version = "0.1.0")
+local_path_override(
+    module_name = "rules_ordeal",
+    path = "..",
+)
+
+# For the negative-case wrapper test
+bazel_dep(name = "rules_shell", version = "0.4.0")
+
+# Configure the ordeal toolchain — downloads the pinned, sha256-verified
+# release binary for the host platform.
+ordeal = use_extension("@rules_ordeal//ordeal:extensions.bzl", "ordeal")
+ordeal.toolchain(version = "0.16.1")
+use_repo(ordeal, "ordeal_toolchains")
+register_toolchains("@ordeal_toolchains//:all")
