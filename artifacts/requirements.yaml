@@ -1,0 +1,46 @@
+artifacts:
+  - id: REQ-001
+    type: requirement
+    title: Verdict-text gating for ordeal check
+    status: implemented
+    description: >
+      ordeal_check shall pass only when `ordeal check` prints the verdict
+      `unsat` (which ordeal only emits after its LRAT certificate
+      re-checked). Exit code alone is insufficient: ordeal exits 0 for a
+      cleanly decided `sat` as well. Failures shall surface the actual
+      verdict and stderr.
+    tags: [core]
+    fields:
+      priority: must
+      category: functional
+
+  - id: REQ-002
+    type: requirement
+    title: Pinned, sha256-verified toolchain download
+    status: implemented
+    description: >
+      The module extension shall download the ordeal release binary per
+      platform from GitHub releases, verified against sha256 hashes pinned
+      from the release's SHA256SUMS.txt, and register per-platform
+      toolchain() rules resolved by exec constraints.
+    tags: [core]
+    fields:
+      priority: must
+      category: functional
+
+  - id: FEAT-001
+    type: feature
+    title: ordeal as a Bazel verification gate
+    status: implemented
+    description: >
+      Bazel rules (ordeal_check, ordeal_verus_check) that gate builds on
+      certificate-checked QF_BV verdicts, paralleling rules_verus.
+      Verified by the examples/ integration test bed in CI
+      (positive gate, negative sat case, Verus obligation log).
+    fields:
+      phase: phase-1
+    links:
+      - type: satisfies
+        target: REQ-001
+      - type: satisfies
+        target: REQ-002

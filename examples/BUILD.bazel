@@ -1,0 +1,37 @@
+load("@rules_ordeal//ordeal:defs.bzl", "ordeal_check", "ordeal_verus_check")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+# Positive case: the query is unsat, so the obligation holds and ordeal
+# produced a checker-validated LRAT certificate before saying so.
+ordeal_check(
+    name = "smoke",
+    srcs = ["unsat.smt2"],
+)
+
+# Inner gate for the negative case. It runs on a satisfiable query, so it
+# MUST fail — tagged manual so `bazel test //...` doesn't run it directly;
+# the wrapper below runs it and asserts the failure.
+ordeal_check(
+    name = "sat_gate",
+    srcs = ["sat.smt2"],
+    tags = ["manual"],
+)
+
+# Negative case: proves a `sat` file fails ordeal_check (with the right
+# message), i.e. the rule gates on the verdict text, not the exit code.
+sh_test(
+    name = "sat_must_fail",
+    size = "small",
+    srcs = ["expect_fail_test.sh"],
+    args = ["$(rootpath :sat_gate)"],
+    data = [":sat_gate"],
+)
+
+# Bonus: discharge a real Verus `by (bit_vector)` obligation log
+# (fixture from pulseengine/ordeal's test suite; gale's cpu_mask lemma).
+# cert_out drops the LRAT certificate into the test's undeclared outputs.
+ordeal_verus_check(
+    name = "verus_obligations",
+    srcs = ["verus_bv_obligation.smt2"],
+    cert_out = True,
+)
