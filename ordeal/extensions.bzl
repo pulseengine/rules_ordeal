@@ -10,6 +10,14 @@ load("//ordeal/private:repo.bzl", "ordeal_release")
 # Hashes are pinned from the release's SHA256SUMS.txt
 # (https://github.com/pulseengine/ordeal/releases).
 _KNOWN_VERSIONS = {
+    "0.26.0": {
+        "sha256": {
+            "aarch64-apple-darwin": "e65156de29519e0d982812f6a8e77135cb3deaa35a19e8dce6a3d1e717c03c87",
+            "aarch64-unknown-linux-gnu": "e61c4b204a5f9696db8cf86d104cce9beebf6b071fb191448a06a6ae4056a208",
+            "x86_64-apple-darwin": "a46071141a6129b190cd770524d5dbca62462ff6751114f1d952449431aab8c3",
+            "x86_64-unknown-linux-gnu": "4ac9469d2afe22b27119fa61e7fc2d2c8ef5d4dae1986bbb176abf0e17ca56cd",
+        },
+    },
     "0.25.0": {
         "sha256": {
             "aarch64-apple-darwin": "15a9fc0c5b42cbbb7c05afaaf7e9f705adb9127e7993c2ca6d67ba180f0d8a4a",
@@ -100,7 +108,7 @@ _KNOWN_VERSIONS = {
     },
 }
 
-_DEFAULT_VERSION = "0.25.0"
+_DEFAULT_VERSION = "0.26.0"
 
 _PLATFORMS = [
     "aarch64-apple-darwin",
