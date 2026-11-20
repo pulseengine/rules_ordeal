@@ -25,3 +25,8 @@ jobs:
       - name: Test examples (integration test bed)
         working-directory: examples
         run: bazel test //... --test_output=errors
+
+      # ordeal v0.38.0+ has no Intel macOS archive: the x86_64-apple-darwin
+      # repo must refuse with a clear message; at 0.37.0 it still downloads.
+      - name: Intel macOS refusal from ordeal v0.38.0 (control at 0.37.0)
+        run: tests/intel_mac_refusal.sh

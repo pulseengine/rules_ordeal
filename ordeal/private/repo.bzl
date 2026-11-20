@@ -18,6 +18,25 @@ _CONSTRAINTS = {
     "x86_64-unknown-linux-gnu": '["@platforms//os:linux", "@platforms//cpu:x86_64"]',
 }
 
+# ordeal stopped publishing Intel macOS (x86_64-apple-darwin) archives with
+# v0.38.0 (fleet-wide decision, 2026-11-20). Older pins still download theirs;
+# from v0.38.0 an Intel Mac host fails here, with this message, when Bazel
+# resolves the ordeal toolchain for it. Other hosts never fetch this repo.
+_LAST_INTEL_MAC_VERSION = (0, 37)
+
+_INTEL_MAC_REFUSAL = (
+    "ordeal v{version} ships no x86_64-apple-darwin (Intel macOS) binary: " +
+    "ordeal stopped building Intel macOS archives from v0.38.0 on. " +
+    "Intel Mac users: build from source (cargo install ordeal --version {version}), " +
+    "or pin ordeal.toolchain(version = \"0.37.0\") or older."
+)
+
+def _major_minor(version):
+    parts = version.split(".")
+    if len(parts) < 2 or not parts[0].isdigit() or not parts[1].isdigit():
+        fail("ordeal version must look like X.Y.Z, got: {}".format(version))
+    return (int(parts[0]), int(parts[1]))
+
 # BUILD file template for the downloaded ordeal toolchain
 _BUILD_FILE_CONTENT = '''
 load("@rules_ordeal//ordeal:toolchain.bzl", "ordeal_toolchain_info")
@@ -60,6 +79,9 @@ def _ordeal_release_impl(rctx):
             platform,
             ", ".join(_SUPPORTED_PLATFORMS),
         ))
+
+    if platform == "x86_64-apple-darwin" and _major_minor(version) > _LAST_INTEL_MAC_VERSION:
+        fail(_INTEL_MAC_REFUSAL.format(version = version))
 
     # Construct download URL. Release tag is v{version}; the tarball contains
     # the flat files ./ordeal, ./README.md, ./LICENSE (no directory prefix).
