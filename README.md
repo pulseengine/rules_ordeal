@@ -112,6 +112,11 @@ sha256 hashes taken from the release's `SHA256SUMS.txt`:
 For versions not in the table, pass per-platform hashes explicitly:
 `ordeal.toolchain(version = "0.17.0", sha256 = {"aarch64-apple-darwin": "..."})`.
 
+**No Intel macOS from ordeal v0.38.0 on.** ordeal no longer publishes
+`x86_64-apple-darwin` (Intel macOS) archives from v0.38.0. On an Intel Mac,
+a v0.38.0 or later pin fails when the toolchain is resolved, with a message
+saying so. Intel Mac users: build from source, or pin 0.37.0 or older.
+
 ## Examples
 
 [`examples/`](examples/) is a self-contained consumer module (via
