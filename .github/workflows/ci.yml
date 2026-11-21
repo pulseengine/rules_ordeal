@@ -20,12 +20,18 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+      # Both modules build from their committed MODULE.bazel.lock. A
+      # MODULE.bazel change whose registry files the lock lacks fails here
+      # (Bazel 8 locks registry file checksums and extension results).
+      - name: Lockfiles are committed
+        run: git ls-files --error-unmatch MODULE.bazel.lock examples/MODULE.bazel.lock
+
       - name: Build ruleset module
-        run: bazel build //...
+        run: bazel build --lockfile_mode=error //...
 
       - name: Test examples (integration test bed)
         working-directory: examples
-        run: bazel test //... --test_output=errors
+        run: bazel test --lockfile_mode=error //... --test_output=errors
 
       # ordeal v0.38.0+ has no Intel macOS archive: the x86_64-apple-darwin
       # repo must refuse with a clear message; at 0.37.0 it still downloads.
