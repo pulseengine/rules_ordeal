@@ -12,6 +12,13 @@ load("//ordeal/private:repo.bzl", "ordeal_release")
 _KNOWN_VERSIONS = {
     # No x86_64-apple-darwin from 0.38.0: ordeal publishes no Intel macOS archive
     # (repo.bzl refuses that host with a message).
+    "0.38.1": {
+        "sha256": {
+            "aarch64-apple-darwin": "7b86bb4fa8cda74e81057371c6a4b9e39512fd38024dbb4668c92ee8e4466bbf",
+            "aarch64-unknown-linux-gnu": "66dfc7159025098fee0abd6b6c79d029a7d470a2dd6f2095d06c966f7e8ce8ae",
+            "x86_64-unknown-linux-gnu": "7a238ecc6710f913e3c7e59291b9471d26bf70c2c36f5f13cbf3f9306aef75d7",
+        },
+    },
     "0.38.0": {
         "sha256": {
             "aarch64-apple-darwin": "4bb15cd8b182bf3417a267b3454682c20e6fa1a79c4ada48f346aeaedc44d4f2",
@@ -221,7 +228,7 @@ _KNOWN_VERSIONS = {
     },
 }
 
-_DEFAULT_VERSION = "0.38.0"
+_DEFAULT_VERSION = "0.38.1"
 
 _PLATFORMS = [
     "aarch64-apple-darwin",
